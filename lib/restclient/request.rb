@@ -363,8 +363,8 @@ module RestClient
     def make_headers(user_headers)
       headers = stringify_headers(default_headers).merge(stringify_headers(user_headers))
 
-=begin
-# override headers from the payload (e.g. Content-Type, Content-Length)
+
+      # override headers from the payload (e.g. Content-Type, Content-Length)
       if @payload
         payload_headers = @payload.headers
 
@@ -383,7 +383,7 @@ module RestClient
 
         headers.merge!(payload_headers)
       end
-=end
+
 
 
       # merge in cookies
