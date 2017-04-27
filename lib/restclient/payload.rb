@@ -197,14 +197,8 @@ module RestClient
         key
       end
 
-      def headers(context_type_header)
-=begin
-        context_type = context_type_header.present? ?
-          {'Content-Type' => %Q{#{context_type_header}}} :
-          {'Content-Type' => %Q{multipart/form-data; boundary=ABW5FxdjB4-3nf6AYqUutk96-trWPzHdLABW5FxdjB4}}
-=end
-
-
+      def headers
+        # TODO: Update to allow user to pass in boundary in execute call
         super.merge({'Content-Type' => %Q{multipart/form-data; boundary=ABW5FxdjB4-3nf6AYqUutk96-trWPzHdLABW5FxdjB4}})
       end
 
