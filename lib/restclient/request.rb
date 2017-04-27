@@ -365,8 +365,7 @@ module RestClient
 
       # override headers from the payload (e.g. Content-Type, Content-Length)
       if @payload
-        puts "The RESTCLIENT headers are...: #{headers}"
-        payload_headers = @payload.headers
+        payload_headers = @payload.headers(headers["Content-Type"])
 
         # Warn the user if we override any headers that were previously
         # present. This usually indicates that rest-client was passed

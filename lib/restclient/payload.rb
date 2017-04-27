@@ -197,8 +197,12 @@ module RestClient
         key
       end
 
-      def headers
-        super.merge({'Content-Type' => %Q{multipart/form-data; boundary=ABW5FxdjB4-3nf6AYqUutk96-trWPzHdLABW5FxdjB4}})
+      def headers(context_type_header)
+        context_type = context_type_header.present? ?
+          {'Content-Type' => %Q{#{context_type_header}}} :
+          {'Content-Type' => %Q{multipart/form-data; boundary=ABW5FxdjB4-3nf6AYqUutk96-trWPzHdLABW5FxdjB4}}
+
+        super.merge(context_type)
       end
 
       def close
