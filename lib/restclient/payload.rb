@@ -118,10 +118,11 @@ module RestClient
 
       def build_stream(params)
         b = '--' + boundary
+        exclude_headers = params[:exclude_headers]
 
         @stream = Tempfile.new("RESTClient.Stream.#{rand(1000)}")
         @stream.binmode
-        @stream.write(b + EOL)
+        @stream.write(b + EOL) unless exclude_headers
 
         case params
         when Hash, ParamsArray
@@ -134,14 +135,14 @@ module RestClient
         x.each_with_index do |a, index|
           k, v = * a
           if v.respond_to?(:read) && v.respond_to?(:path)
-            create_file_field(@stream, k, v)
+            create_file_field(@stream, k, v) unless exclude_headers
           else
             create_regular_field(@stream, k, v)
           end
-          @stream.write(EOL + b)
-          @stream.write(EOL) unless last_index == index
+          @stream.write(EOL + b) unless exclude_headers
+          @stream.write(EOL) unless last_index == index || exclude_headers
         end
-        @stream.write('--')
+        @stream.write('--') unless exclude_headers
         @stream.write(EOL)
         @stream.seek(0)
       end
@@ -153,13 +154,15 @@ module RestClient
         s.write(v)
       end
 
-      def create_file_field(s, k, v)
+      def create_file_field(s, k, v, exclude_headers = false)
         begin
-          s.write("Content-Disposition: form-data;")
-          s.write(" name=\"#{k}\";") unless (k.nil? || k=='')
-          s.write(" filename=\"#{v.respond_to?(:original_filename) ? v.original_filename : File.basename(v.path)}\"#{EOL}")
-          s.write("Content-Type: #{v.respond_to?(:content_type) ? v.content_type : mime_for(v.path)}#{EOL}")
-          s.write(EOL)
+          unless exclude_headers
+            s.write("Content-Disposition: form-data;")
+            s.write(" name=\"#{k}\";") unless (k.nil? || k=='')
+            s.write(" filename=\"#{v.respond_to?(:original_filename) ? v.original_filename : File.basename(v.path)}\"#{EOL}")
+            s.write("Content-Type: #{v.respond_to?(:content_type) ? v.content_type : mime_for(v.path)}#{EOL}")
+            s.write(EOL)
+          end
           while (data = v.read(8124))
             s.write(data)
           end
