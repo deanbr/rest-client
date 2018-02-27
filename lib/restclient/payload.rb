@@ -8,7 +8,9 @@ module RestClient
   module Payload
     extend self
 
-    def generate(params)
+    def generate(params, boundary=nil)
+      @boundary = boundary if boundary
+
       if params.is_a?(String)
         Base.new(params)
       elsif params.is_a?(Hash)
@@ -199,7 +201,7 @@ module RestClient
 
       def headers
         # TODO: Update to allow user to pass in boundary in execute call
-        super.merge({'Content-Type' => %Q{multipart/form-data; boundary=ABW5FxdjB4-3nf6AYqUutk96-trWPzHdLABW5FxdjB4}})
+        super.merge({'Content-Type' => %Q{multipart/form-data; boundary=#{boundary}}})
       end
 
       def close

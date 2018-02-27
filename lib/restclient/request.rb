@@ -74,7 +74,7 @@ module RestClient
       # process cookie arguments found in headers or args
       @cookie_jar = process_cookie_args!(@uri, @headers, args)
 
-      @payload = Payload.generate(args[:payload])
+      @payload = Payload.generate(args[:payload], args[:boundary])
 
       @user = args[:user] if args.include?(:user)
       @password = args[:password] if args.include?(:password)
