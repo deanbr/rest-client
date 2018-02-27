@@ -200,7 +200,6 @@ module RestClient
       end
 
       def headers
-        # TODO: Update to allow user to pass in boundary in execute call
         super.merge({'Content-Type' => %Q{multipart/form-data; boundary=#{boundary}}})
       end
 
